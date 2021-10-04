@@ -36,11 +36,18 @@ class Piece {
 
     }
 
-    move(spaceToMove) {
+    move(spaceToMove, board) {
 
         spaceToMove.piece = this;
         this.space.piece = null;
         this.space = spaceToMove
         
+        for(let i = 0; i < board.rows; i++) {
+            for(let j = 0; j < board.cols; j++) {
+                board.spaces[i][j].highlight = false;
+                if(board.spaces[i][j].piece !== null)
+                    board.spaces[i][j].piece.selected = false;
+            }   
+        }
     }
 } 

@@ -69,7 +69,7 @@ class Pawn extends Piece {
         if(this.space.row == 0 && spaceToMove.row == 0)
             this.passedCenter = true;
 
-        super.move(spaceToMove);
+        super.move(spaceToMove, board);
 
         if(this.space.row == board.rows-1) {
             this.space.piece = new Queen(this.color, this.space)

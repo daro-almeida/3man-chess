@@ -153,6 +153,12 @@ class ThreeManChess {
     }
   }
 
+  move(from, to, newTmfen) {
+    this.spaces[from.row][from.col].piece.move(this.spaces[to.row][to.col], this);
+    this.turn++;
+    this.tmfen = newTmfen;
+  }
+
   mouseClicked() {
     let clear = true;
     
@@ -161,13 +167,14 @@ class ThreeManChess {
         if(dist(mouseX, mouseY, this.spaces[i][j].center()[0], this.spaces[i][j].center()[1]) < this.diameter * 0.025) {
           
           if(this.spaces[i][j].highlight) {
-            let selectedPiece = this.selectedPiece();         
-
+            let selectedPiece = this.selectedPiece();      
+            let previousSpace = selectedPiece.space;
+            
             selectedPiece.move(this.spaces[i][j], this)
             this.turn++;            
 
             this.updateTmfen();
-            console.log(this.tmfen)
+            sock.emit('move', {row : previousSpace.row, col : previousSpace.col}, {row : i, col : j}, this.tmfen);
             
           } else {
             clear = false;

@@ -87,7 +87,7 @@ class King extends Piece {
     move(spaceToMove, board) {
         let dist = this.space.col - spaceToMove.col;
 
-        super.move(spaceToMove);
+        super.move(spaceToMove, board);
         
         //king side castle
         if(dist == 2) {
