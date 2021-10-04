@@ -2,6 +2,8 @@ let board1;
 const OFFSET = 20;
 const BOARDOFFEST = 25;
 
+const sock = io();
+
 function setup() {
     createCanvas(windowWidth-OFFSET, windowHeight-OFFSET);
 
@@ -10,8 +12,13 @@ function setup() {
         diameter = windowHeight - BOARDOFFEST;
     else
         diameter = windowWidth - BOARDOFFEST;
-    board1 = new ThreeManChess((windowWidth-OFFSET)/2, (windowHeight-OFFSET)/2, diameter, 'start');
+
+    sock.emit('load', (tmfen) => {board1 = new ThreeManChess((windowWidth-OFFSET)/2, (windowHeight-OFFSET)/2, diameter, tmfen);});
 }
+
+sock.on('update', (move, newTmfen) => {
+    board1.move(move.from, move.to, newTmfen);
+});
 
 Number.prototype.mod = function(n) {
     return ((this%n)+n)%n;
@@ -28,9 +35,11 @@ function windowResized() {
 }
 
 function draw() {
-    colorMode(RGB, 255, 255, 255)
-    background(153,76,0);
-    board1.show();
+    if(board1 !== undefined) {
+        colorMode(RGB, 255, 255, 255)
+        background(153,76,0);
+        board1.show();
+    }
 }
 
 function mouseClicked() {

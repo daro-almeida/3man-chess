@@ -1,8 +1,6 @@
 const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
-var fs = require('fs');
-
 const app = express();
 
 const clientPath = `${__dirname}/../client`
@@ -14,33 +12,30 @@ console.log(`Serving static from ${clientPath}`)
 
 const server = http.createServer(app);
 
-/*const io = socketio(server);
+let tmfen = 'start';
 
-function writeJson(gameJson) {
+const io = socketio(server);
+
+/*function writeJson(gameJson) {
     fs.writeFileSync(gameFileName, JSON.stringify(gameJson, null, 2));
 }
 
 function readJson() {
     let data = fs.readFileSync(gameFileName);
     return JSON.parse(data);
-}
+}*/
 
 io.on('connection', (sock) => {
-    
-    sock.on('request', () => {
-        let gameJson = readJson();
-        sock.emit('update', gameJson);
-    })
 
-    sock.on('write', gameJson => {
-        writeJson(gameJson);
-    })
+    sock.on('load', function(callback){
+        callback(tmfen);
+    });
 
-    sock.on('updateAll', () => {
-        let gameJson = readJson();
-        sock.broadcast.emit('update', gameJson);
-    })
-})*/
+    sock.on('move', (from, to, newTmfen) => {  
+        tmfen = newTmfen;
+        sock.broadcast.emit('update', {from, to}, newTmfen)
+    });
+})
 
 server.on('error', (err) => {
     console.error('Server error:', err)
